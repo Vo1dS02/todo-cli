@@ -1,13 +1,11 @@
 package ru.chelgu.todo.model;
 
-import java.text.AttributedCharacterIterator;
-
 public class Task {
     private long id;
     private String title;
     private boolean done;
 
-    public Task() {
+    public Task(long id, String title) {
         this.done = done;
         this.id = id;
         this.title = title;
@@ -30,6 +28,6 @@ public class Task {
 
     @Override
     public String toString() {
-        return String.format("%s - #%d - $s", done ? "[x]" : "[ ]", id, title);
+        return String.format("%s - #%d - %s", done ? "[x]" : "[ ]", id, title);
     }
 }

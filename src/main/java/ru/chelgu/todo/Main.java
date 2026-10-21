@@ -1,37 +1,79 @@
 package ru.chelgu.todo;
 
+import ru.chelgu.todo.model.Task;
+import ru.chelgu.todo.repository.TaskRepository;
+
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
+        TaskRepository repo = new TaskRepository();
+
         System.out.println("===== Менеджер задач ======");
         boolean cheackClose = true;
         while (cheackClose == true) {
-            System.out.println("1. Добавить задачу");
-            System.out.println("2. Показать все");
-            System.out.println("3. Отметить выполнение");
-            System.out.println("4. Удалить");
-            System.out.println("5. Выход");
-            System.out.print("Выберите пункт: ");
+            System.out.print("1. Добавить задачу " +
+                    "\n2. Показать все " +
+                    "\n3. Отметить выполнение " +
+                    "\n4. Удалить " +
+                    "\n5. Выход " +
+                    "\nВыберите пункт: ");
             String userInput = scanner.nextLine();
+            System.out.println("");
             switch (userInput) {
                 case "1":
+                    System.out.print("Введите текст задачи: ");
+
+                    String title = scanner.nextLine();
                     System.out.println("");
-                    System.out.println("Введите текст задачи: ");
-                    System.out.println("Задача добавлена");
-                    System.out.println("");
+                    if (title.isEmpty()) {
+                        System.out.println("Ошибка: текст задачи не может быть пустым");
+                    } else {
+                        repo.add(title);
+                        System.out.println("Задача добавлена!");
+                        System.out.println("");
+                    }
                     break;
+
                 case "2":
-                    System.out.println("test");
+                    for (Task t : repo.findAll()) {
+                        System.out.println(t);
+                    }
+                    System.out.println("");
                     break;
                 case "3":
-                    System.out.println("Выполнено!");
+                    // repo.markDone();
+                    System.out.print("Введите ID: ");
+                    String stringId = scanner.nextLine();
+                    long id = Long.parseLong(stringId);
+                    boolean success = repo.markDone(id);
+                    if (success) {
+                        System.out.println("Выполнено!");
+                        System.out.println("");
+                    }
+                    else {
+                        System.out.println("Задача с таким ID не найдена!");
+                        System.out.println("");
+                    }
                     break;
+
                 case "4":
-                    System.out.println("Удаление");
+                    System.out.print("Введите ID: ");
+                    String idDel = scanner.nextLine();
+                    long longIdDel = Long.parseLong(idDel);
+                    boolean successDel = repo.delete(longIdDel);
+                    if (successDel) {
+                        System.out.println("Удалено!");
+                        System.out.println("");
+                    }
+                    else {
+                        System.out.println("Задача с таким ID не найдена!");
+                        System.out.println("");
+                    }
                     break;
+
                 case "5":
                     cheackClose = false;
             }
