@@ -2,6 +2,10 @@ package ru.chelgu.todo.repository;
 
 import ru.chelgu.todo.model.Task;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class TaskRepository {
@@ -49,6 +53,47 @@ public class TaskRepository {
             }
         }
         return Optional.empty();
+    }
+
+    public void save() {
+        List<String> lines = new ArrayList<String>();
+        for (Task task : tasks) {
+            String addText = String.format("%d;%s;%s", task.getId(), task.getTitle(), task.getDone());
+            lines.add(addText);
+            Path path = Path.of("tasks.csv");
+            try {
+                Files.write(path, lines, StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                System.out.println("Неверная запись в файл");
+            }
+        }
+    }
+
+    public void load() {
+        Path path = Path.of("tasks.csv");
+        if (Files.exists(path)) {
+            try {
+                List<String> loadText = Files.readAllLines(path, StandardCharsets.UTF_8);
+                for (String str : loadText) {
+                    String[] parts = str.split(";");
+                    long newId = Long.parseLong(parts[0]);
+                    String newMes = parts[1];
+                    boolean newDone = Boolean.parseBoolean(parts[2]);
+                    Task task = new Task(newId, newMes);
+                    if (newDone == true) {
+                        task.setDone(true);
+                    }
+                    tasks.add(task);
+                    if (task.getId() == nextId) {
+                        nextId += 1;
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("Неверный входной формат данных");
+            }
+        } else {
+            return;
+        }
     }
 }
 
