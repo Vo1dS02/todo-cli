@@ -13,12 +13,13 @@ public class TaskService {
         this.repo = repo;
     }
 
-    public void addTask(String title) throws IOException {
-        if (title == null) {
-            throw new NullPointerException("текст задачи не может быть пустым");
+    public Task addTask(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("текст задачи не может быть пустым");
         } else {
-            repo.add(title);
+            Task newTask = repo.add(title);
             repo.save();
+            return newTask;
         }
     }
 
