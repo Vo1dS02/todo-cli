@@ -4,6 +4,7 @@ import ru.chelgu.todo.model.Task;
 import ru.chelgu.todo.repository.TaskRepository;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class TaskService {
@@ -13,11 +14,11 @@ public class TaskService {
         this.repo = repo;
     }
 
-    public Task addTask(String title) {
+    public Task addTask(String title, LocalDate deadline) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("текст задачи не может быть пустым");
         } else {
-            Task newTask = repo.add(title);
+            Task newTask = repo.add(title, deadline);
             repo.save();
             return newTask;
         }

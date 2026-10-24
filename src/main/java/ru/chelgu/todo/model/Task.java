@@ -1,21 +1,30 @@
 package ru.chelgu.todo.model;
 
-public class Task {
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+public class Task implements ColorText{
     private long id;
     private String title;
     private boolean done;
+    private LocalDate deadline;
 
-    public Task(long id, String title) {
-        this.done = done;
+    public Task(long id, String title, LocalDate deadline) {
         this.id = id;
         this.title = title;
+        this.deadline = deadline;
     }
 
     public long getId() {
         return id;
     }
+
     public boolean getDone() {
         return done;
+    }
+
+    public LocalDate getDeadline() {
+        return deadline;
     }
 
     public String getTitle() {
@@ -26,8 +35,14 @@ public class Task {
         this.done = done;
     }
 
+
+
     @Override
     public String toString() {
-        return String.format("%s - #%d - %s", done ? "[x]" : "[ ]", id, title);
+        String baseInput = String.format("%s - #%d - %s (до: %s) ", done ? "[x]" : "[ ]", id, title, deadline);
+        if (!done && deadline != null && (deadline.isEqual(LocalDate.now()) || deadline.isBefore(LocalDate.now()))) {
+            return ColorText.RED + baseInput + ColorText.RESET;
+        }
+        else return baseInput;
     }
 }

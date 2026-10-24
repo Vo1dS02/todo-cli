@@ -5,6 +5,7 @@ import ru.chelgu.todo.repository.TaskRepository;
 import ru.chelgu.todo.service.TaskService;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Main {
@@ -34,9 +35,19 @@ public class Main {
                     if (title.isEmpty()) {
                         System.out.println("Ошибка: текст задачи не может быть пустым");
                     } else {
-                        service.addTask(title);
-                        System.out.println("Задача добавлена!");
-                        System.out.println("");
+                        System.out.println("Введите дедлайн в формате ГГГГ-ММ-ДД, или нажмите enter если задача без срока");
+                        try {
+                            String deadlineInput = scanner.nextLine();
+                            if (deadlineInput != null) {
+                                service.addTask(title, LocalDate.parse(deadlineInput));
+                                System.out.println("Задача добавлена!");
+                                System.out.println("");
+                            }
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Неверный формат дедлайна");
+                        }
+
+
                     }
                     break;
 
