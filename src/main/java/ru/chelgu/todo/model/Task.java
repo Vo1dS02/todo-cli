@@ -42,6 +42,8 @@ public class Task implements ColorText{
         String baseInput = String.format("%s - #%d - %s (до: %s) ", done ? "[x]" : "[ ]", id, title, deadline);
         if (!done && deadline != null && (deadline.isEqual(LocalDate.now()) || deadline.isBefore(LocalDate.now()))) {
             return ColorText.RED + baseInput + ColorText.RESET;
+        } else if(done == true) {
+            return ColorText.GREEN + baseInput + ColorText.RESET;
         }
         else return baseInput;
     }

@@ -59,7 +59,7 @@ public class TaskRepository {
     public void save() {
         List<String> lines = new ArrayList<String>();
         for (Task task : tasks) {
-            String addText = String.format("%d;%s;%s", task.getId(), task.getTitle(), task.getDone());
+            String addText = String.format("%d;%s;%s;%s", task.getId(), task.getTitle(), task.getDone(), task.getDeadline() == null ? "null" : task.getDeadline().toString());
             lines.add(addText);
             Path path = Path.of("tasks.csv");
             try {
@@ -76,20 +76,23 @@ public class TaskRepository {
             try {
                 List<String> loadText = Files.readAllLines(path, StandardCharsets.UTF_8);
                 for (String str : loadText) {
+                    if (str.isEmpty()) continue;;
+
                     String[] parts = str.split(";");
                     long newId = Long.parseLong(parts[0]);
                     String newMes = parts[1];
                     boolean newDone = Boolean.parseBoolean(parts[2]);
 
+                    LocalDate newDeadline = null;
                     if (parts.length > 3 && !parts[3].equals("null")) {
-                        LocalDate newDeadline = LocalDate.parse(parts[3]);
+                        newDeadline = LocalDate.parse(parts[3]);
                         Task task = new Task(newId, newMes, newDeadline);
                         if (newDone == true) {
                             task.setDone(true);
                         }
                         tasks.add(task);
-                        if (task.getId() == nextId) {
-                            nextId += 1;
+                        if (task.getId() >= nextId) {
+                            nextId = task.getId() + 1;
                         }
                     }
 
